@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2017-2-15 16:59:13 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+ <class name="com.fang.hibernate.po.Course" table="course">
+  <id name="cid" type="java.lang.Integer">
+   <column name="CID" />
+   <generator class="native" />
+  </id>
+  <property name="cname" type="java.lang.String">
+   <column name="CNAME" length="25" />
+  </property>
+  <set name="students" table="student_course" inverse="true" lazy="true">
+   <key>
+    <column name="cid" /><!-- key为当前表在多对多表中的外键名称 -->
+   </key>
+   <many-to-many class="com.fang.hibernate.po.Student"
+    column="sid">
+   </many-to-many>
+  </set>
+ </class>
+</hibernate-mapping>

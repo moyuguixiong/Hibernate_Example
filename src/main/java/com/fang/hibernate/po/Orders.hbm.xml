@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2017-2-15 13:59:41 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+ <class name="com.fang.hibernate.po.Orders" table="orders">
+  <id name="oid" type="java.lang.Integer">
+   <column name="OID" />
+   <generator class="native" />
+  </id>
+  <property name="address" type="java.lang.String">
+   <column name="ADDRESS" length="100" />
+  </property>
+  <many-to-one lazy="proxy" fetch="select" name="customer"
+   class="com.fang.hibernate.po.Customer">
+   <!-- lazy取值： false：不使用延迟加载
+   no-proxy:不使用代理，但是和使用proxy效果相同。
+    proxy：使用代理，由Customer的映射文件袋的类的lazy属相决定。为true，则延迟加载，为false，则不延迟加载 -->
+   <column name="CID" length="12" /><!-- 要和一对多中，一的配置文件的key保持一致，否则生成多个外键字段 -->
+  </many-to-one>
+ </class>
+</hibernate-mapping>

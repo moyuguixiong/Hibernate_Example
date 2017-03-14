@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+ xmlns:aop="http://www.springframework.org/schema/aop"
+ xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+ <!-- 读取属性文件 -->
+ <!-- ignore-unresolvable:(1):是否忽视不存在的配置项;(2)是否还要扫描其他配置项 -->
+ <context:property-placeholder location="classpath:db/db.druid.properties"
+  ignore-unresolvable="true" />
+
+ <!-- 配置连接池(dataSource数据源) -->
+ <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+  scope="singleton">
+  <property name="name" value="dataSource" />
+  <property name="driverClassName" value="${jdbc.driverClass}" />
+  <property name="url" value="${jdbc.w.url}" />
+  <property name="username" value="${jdbc.w.username}" />
+  <property name="password" value="${jdbc.w.password}" />
+  <!-- 初始连接数 -->
+  <property name="initialSize" value="${initialSize}" />
+  <!-- 最大连接数 -->
+  <property name="maxActive" value="${maxActive}" />
+  <!-- 最小连接数 -->
+  <property name="minIdle" value="${minIdle}" />
+  <!-- 获取连接时最大等待时间 ,单位毫秒。配置了maxWait之后，缺省启用公平锁，并发效率会有所下降，如果需要可以通过配置useUnfairLock属性为true使用非公平锁。 -->
+  <property name="maxWait" value="${maxWait}" />
+  <!-- 是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。 -->
+  <property name="poolPreparedStatements" value="false" />
+  <!-- 要启用PSCache，默认-1，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100 -->
+  <property name="maxPoolPreparedStatementPerConnectionSize"
+   value="-1" />
+  <!-- 申请连接时是否检测有效性，默认true，会影响性能 -->
+  <property name="testOnBorrow" value="false" />
+  <!-- 归还连接时是否检测有效性，为true会影响性能 ，默认为false -->
+  <property name="testOnReturn" value="false" />
+  <!-- 连接空闲时是否检测有效性，建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。 -->
+  <!-- mysql数据库为短连接时，设置小于连接空闲销毁时间，保证池中的连接有效 -->
+  <property name="testWhileIdle" value="true" />
+  <!-- 测试连接有效性时，执行的sql语句 -->
+  <property name="validationQuery" value="select 1" />
+  <!-- 两层含义：1、连接空闲多长时间，进行有效性检测 ，单位毫秒 ，与testWhileIdle配合使用；2、间隔多次时间启动一个线程，检测空闲时间大于minEvictableIdleTimeMillis的连接 -->
+  <property name="timeBetweenEvictionRunsMillis" value="${timeBetweenEvictionRunsMillis}" />
+  <!-- 连接在池中保持空闲而不被空闲连接回收器线程回收的时间，即连接在池中的最大空闲时间，单位毫秒， 空闲时间超过该时间后，回收该连接对象，即从连接池中移除该连接对象，一般设置为8个小时以内 -->
+  <property name="minEvictableIdleTimeMillis" value="${minEvictableIdleTimeMillis}" />
+  <!-- 是否自动回收长时间未被放回连接池的连接 -->
+  <property name="removeAbandoned" value="true" />
+  <!--未放回池中连接，空闲时间超过该秒数后，自动回收，默认300秒，设为180秒 -->
+  <property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}" />
+  <!-- 关闭空闲超时连接时，是否打印日志 -->
+  <property name="logAbandoned" value="true" />
+
+  <!-- minEvictableIdleTimeMillis针对连接池中的连接对象。 removeAbandonedTimeout针对未被close的活动连接。 -->
+  <property name="filters" value="stat" />
+
+ </bean>
+
+ <!-- 使用拦截器和aop监控spring -->
+ <bean id="druid-stat-interceptor"
+  class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor">
+ </bean>
+ <bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut"
+  scope="prototype">
+  <property name="patterns">
+   <list>
+    <value>com.fang.hibernate.service.*</value>
+    <value>com.fang.hibernate.dao.*</value>
+   </list>
+  </property>
+ </bean>
+
+ <aop:config proxy-target-class="true">
+  <aop:advisor advice-ref="druid-stat-interceptor"
+   pointcut-ref="druid-stat-pointcut" />
+ </aop:config>
+
+
+ <!-- session工厂对象 -->
+ <bean id="sessionFactory"
+  class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+  <!-- 数据源 -->
+  <property name="dataSource" ref="dataSource" />
+
+  <!-- 配置po映射文件 -->
+  <property name="mappingLocations" value="classpath:com/fang/hibernate/po/*.hbm.xml" />
+
+  <!-- 扫描的包，可配置多个(po类上使用注解方式的时候用) -->
+  <!-- <property name="packagesToScan"> <list> <value>com.fang.hibernate.po</value>
+   </list> </property> -->
+
+  <!-- hibernate相关配置，可以引用配置文件(包含映射文件)，也可以直接配置 -->
+  <property name="configLocation" value="classpath:hibernate/hibernate.cfg.xml" />
+
+  <!-- hibernate相关配置,直接配置 -->
+  <!-- <property name="hibernateProperties"> <props> <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+   </props> </property> -->
+
+ </bean>
+</beans>

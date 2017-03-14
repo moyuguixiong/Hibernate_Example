@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2017-2-15 13:44:41 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+ <class name="com.fang.hibernate.po.SysUser" table="SYSUSER" lazy="true">
+  <id name="userId" type="java.lang.String">
+   <column name="USERID" />
+   <generator class="assigned" />
+   <!--
+* 主键的生成策略:
+* increment :自动增长.适合 short int long...不是使用数据库的自动增长机制.使用Hibernate框架提供的自动增长方式.
+* select max(id) from 表; 在最大值的基础上+1.(多线程的问题.)在集群下不要使用
+
+* identity      :自动增长.适合 short int long...采用数据库的自动增长机制.不适合于Oracle数据库.
+* sequence  :序列.适用于 short int long ... 应用在Oracle上 .
+* uuid      :适用于字符串类型的主键.采用随机的字符串作为主键.
+* native        :本地策略.底层数据库不同.自动选择适用identity 还是 sequence.
+* assigned      :Hibernate框架不维护主键,主键由程序自动生成.
+* foreign       :主键的外来的.(应用在多表一对一的关系.)
+-->
+  </id>
+  <property name="userName" type="java.lang.String">
+   <column name="USERNAME" />
+  </property>
+  <property name="age" type="java.lang.Integer">
+   <column name="AGE" />
+  </property>
+  <property name="gender" type="java.lang.Boolean">
+   <column name="GENDER" />
+  </property>
+  <property name="birthday" type="java.util.Date">
+   <column name="BIRTHDAY" />
+  </property>
+ </class>
+</hibernate-mapping>

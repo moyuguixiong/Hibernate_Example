@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2017-2-15 13:59:41 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+ <class name="com.fang.hibernate.po.Customer" table="customer"
+  select-before-update="false" lazy="true">
+  <id name="cid" type="java.lang.Integer">
+   <column name="CID" />
+   <generator class="native" />
+  </id>
+  <property name="cname" type="java.lang.String">
+   <column name="CNAME" length="25" />
+  </property>
+  <!-- inverse:是否放弃外键的维护权，默认：false，不放弃；true：放弃(避免双向维护产生多余sql) 一般情况下，由多的一方维护，一的一方放弃。 -->
+  <set name="orders" inverse="true" lazy="true" fetch="select"
+   cascade="save-update,delete" batch-size="2">
+   <!-- 级联操作的常用取值： none :不使用级联 dave-update :保存或更新的时候级联 delete :删除的时候级联 all
+    :除了孤儿删除以外的所有级联. delete-orphan :孤儿删除(孤子删除). * 仅限于一对多.只有一对多时候,才有父子存在.认为一的一方是父亲,多的一方是子方.
+    * 当一个客户与某个订单解除了关系.将外键置为null.订单没有了所属客户,相当于一个孩子没有了父亲.将这种记录就删除了. all-delete-orphan
+    :包含了孤儿删除的所有的级联. -->
+   <key>
+    <column name="CID" /><!-- 要和一对多中，多的表的外键字段名一致，否则会生成多个外键字段 -->
+   </key>
+   <one-to-many class="com.fang.hibernate.po.Orders" />
+  </set>
+ </class>
+
+ <!-- 定义命名查询,query标签内写HQL语句，sql-query标签内写sql语句 -->
+ <!-- <query name="findByCid"> from Customer as c where c.cid= <query-param
+  name="" type="" /> </query> -->
+
+
+</hibernate-mapping>

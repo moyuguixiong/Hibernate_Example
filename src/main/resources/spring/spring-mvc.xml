@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+ xmlns:context="http://www.springframework.org/schema/context"
+ xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+ <!-- 处理器映射器和处理器适配器的简便配置，相当于配置了RequestMappingHandlerMapping 和RequestMappingHandlerAdapter -->
+ <!-- <mvc:annotation-driven> </mvc:annotation-driven> -->
+
+
+ <!-- 配置写好的参数转换器 -->
+ <bean id="stringTrimConverter" class="com.fang.hibernate.web.converter.StringTrimConverter" />
+ <bean id="stringToDateConverter" class="com.fang.hibernate.web.converter.StringToDateConverter" />
+ <bean id="stringToLongConverter" class="com.fang.hibernate.web.converter.StringToLongConverter" />
+
+ <!--配置参数类型转换器服务 -->
+ <bean id="conversionService"
+  class="org.springframework.context.support.ConversionServiceFactoryBean">
+  <property name="converters">
+   <set>
+    <ref bean="stringTrimConverter" />
+    <ref bean="stringToDateConverter" />
+    <ref bean="stringToLongConverter" />
+   </set>
+  </property>
+ </bean>
+
+ <!-- 配置参数验证器(validator)的资源文件 -->
+ <bean id="validationMessageSource"
+  class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+  <property name="basenames">
+   <list>
+    <value>classpath:validation/ValidationMessages</value>
+   </list>
+  </property>
+  <property name="cacheSeconds" value="300" />
+  <property name="fileEncodings" value="UTF-8" />
+ </bean>
+
+ <!-- 配置基于hibernate-validator的参数验证器(validator) -->
+ <bean id="validator"
+  class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+  <property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+  <property name="validationMessageSource" ref="validationMessageSource" />
+ </bean>
+
+ <!-- 配置web绑定初始化器，初始化器中可以配置参数类型转换(conversionService)、参数验证器(validator) -->
+ <bean id="webBindingInitializer"
+  class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+  <property name="conversionService" ref="conversionService" />
+  <property name="validator" ref="validator" />
+ </bean>
+
+ <!-- 配置jackson的对象转换为json或xml的类型转换 -->
+ <bean id="dateFormat" class="java.text.SimpleDateFormat">
+  <constructor-arg name="pattern" type="java.lang.String"
+   value="yyyy-MM-dd HH:mm:ss" />
+ </bean>
+ <bean id="xmlMapper" class="com.fasterxml.jackson.dataformat.xml.XmlMapper">
+  <property name="dateFormat" ref="dateFormat" />
+ </bean>
+ <bean id="jsonMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
+  <property name="dateFormat" ref="dateFormat" />
+ </bean>
+
+ <!-- SpringMVC使用消息转换器实现请求报文和对象、对象和响应报文之间的自动转换 -->
+
+ <!-- 配置处理器映射器 -->
+ <bean
+  class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+  <!-- 可在这里配置支持url的大小写不敏感 -->
+  <!-- <property name="pathMatcher" /> -->
+ </bean>
+ <!-- 配置处理器适配器 -->
+ <bean
+  class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+  <!-- 配置参数绑定初始化器，包含参数转换器、参数验证器 -->
+  <property name="webBindingInitializer" ref="webBindingInitializer" />
+
+  <!-- SpringMVC使用消息转换器实现请求报文和对象、对象和响应报文之间的自动转换 -->
+  <!-- 通过消息转换器编码设置可以解决get请求中文乱码问题，因为编码过滤器只对post请求有效，不能使用spring的CharacterEncodingFilter解决get请求中文乱码问题 -->
+  <property name="messageConverters">
+   <list>
+    <bean
+     class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+     <property name="objectMapper" ref="jsonMapper" />
+     <property name="supportedMediaTypes">
+      <list>
+       <value>text/html;charset=UTF-8</value>
+       <value>text/json;charset=UTF-8</value>
+       <value>application/json;charset=UTF-8</value>
+      </list>
+     </property>
+    </bean>
+    <bean
+     class="org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter">
+     <property name="objectMapper" ref="xmlMapper" />
+     <property name="supportedMediaTypes">
+      <list>
+       <value>text/xml;charset=UTF-8</value>
+       <value>application/xml;charset=UTF-8</value>
+      </list>
+     </property>
+    </bean>
+   </list>
+  </property>
+ </bean>
+
+ <!-- 配置mvc的注解扫描包路径，忽略service的扫描，防止事务失效 -->
+ <context:component-scan base-package="com.fang.hibernate.web.controller">
+  <context:exclude-filter type="annotation"
+   expression="org.springframework.stereotype.Service" />
+ </context:component-scan>
+
+ <!-- 配置视图解析器 ,根据逻辑视图返回物理视图 -->
+ <bean
+  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+  <property name="prefix" value="/views/" />
+  <property name="suffix" value=".jsp" />
+ </bean>
+</beans>
