@@ -3,12 +3,8 @@
  "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
  <session-factory>
-  <property name="hibernate.connection.driver_class">
-   com.mysql.jdbc.Driver
-  </property>
-  <property name="hibernate.connection.url">
-   jdbc:mysql://127.0.0.1:3306/test
-  </property>
+  <property name="hibernate.connection.driver_class"> com.mysql.jdbc.Driver</property>
+  <property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/test</property>
   <property name="hibernate.connection.username">root</property>
   <property name="hibernate.connection.password">123456</property>
 
@@ -28,6 +24,7 @@
   <property name="hibernate.current_session_context_class">thread</property>
   <!-- 取值： thread：Session对象的生命周期与本地线程绑定。 jta：Session对象的生命周期与JTA事务绑定。 managed：Hibernate委托程序来管理Session对象的生命周期。 -->
 
+  <mapping resource="com/fang/hibernate/po/TestUser.hbm.xml" />
   <!-- 开启二级缓存 -->
   <!-- <property name="hibernate.cache.use_second_level_cache">true</property> -->
   <!-- 开启查询缓存 -->
@@ -35,7 +32,6 @@
   <!-- 配置二级缓存的提供商 -->
   <!-- <property name="hibernate.cache.provider_class">org.hibernate.cache.</property> -->
 
-  <mapping resource="com/fang/hibernate/po/TestUser.hbm.xml" />
   <!-- <mapping resource="com/fang/hibernate/po/Customer.hbm.xml" /> <mapping 
    resource="com/fang/hibernate/po/Orders.hbm.xml" /> <mapping resource="com/fang/hibernate/po/Course.hbm.xml" 
    /> <mapping resource="com/fang/hibernate/po/Student.hbm.xml" /> -->

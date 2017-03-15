@@ -2,17 +2,18 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 2017-2-15 13:44:41 by Hibernate Tools 3.4.0.CR1 -->
-<hibernate-maping>
- <class name="com.fang.hibernate.po.TestUser" table="testuser">
+<hibernate-mapping>
+ <class name="com.fang.hibernate.po.TestUser" table="testuser"
+  lazy="false">
   <id name="id" type="java.lang.Long">
    <column name="id" />
    <generator class="native" />
   </id>
-  <property name="name" column="name" type="java.lang.String">
+  <property name="name" type="java.lang.String">
    <column name="name" length="50" not-null="true" />
   </property>
   <property name="age" type="java.lang.Integer">
    <column name="age" not-null="true" />
   </property>
  </class>
-</hibernate-maping>
+</hibernate-mapping>
