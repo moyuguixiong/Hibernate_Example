@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+ <session-factory>
+  <property name="hibernate.connection.driver_class">
+   com.mysql.jdbc.Driver
+  </property>
+  <property name="hibernate.connection.url">
+   jdbc:mysql://127.0.0.1:3306/test
+  </property>
+  <property name="hibernate.connection.username">root</property>
+  <property name="hibernate.connection.password">123456</property>
+
+
+  <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+  <property name="hibernate.format_sql">true</property>
+  <property name="hibernate.show_sql">true</property>
+  <property name="hibernate.hbm2ddl.auto">update</property>
+  <property name="hibernate.connection.autocommit">false</property>
+  <!-- 设置事务的隔离级别 1：read_uncommited,会产生脏读、不可重复读、虚读(会读取未提交的数据)； 2:read_commited，不产生脏读，但会产生不可重复读、虚读(虽然不读取未提交的数据，但是会读取已提交的更新和插入)； 
+   4:repeatable_read，不产生脏读、不可重复读，但会产生虚读(不读取未提交的数据，不读取已提交的更新，但会读取已提交的插入)； 8:serilizable，不会产生脏读、不可重复读、虚读(不读取未提交的数据，也不读取已提交的更新和插入)。 
+   总结：事务隔离级别越高，能读取到的其他事务的已提交的数据，就越少。 -->
+  <property name="hibernate.connection.isolation">4</property>
+  <!-- * create :每次执行的时候,创建一个新的表.(如果以前有该表,将该表删除重新创建.) 一般测试的时候的使用. * create-drop:每次执行的时候,创建一个新的表,程序执行结束后将这个表,删除掉了. 
+   一般测试的时候使用. * update :如果数据库中没有表,创建一个新的表,如果有了,直接使用这个表.可以更新表的结构. * validate 
+   :会使用原有的表.完成校验.校验映射文件与表中配置的字段是否一致.不一致报错. -->
+  <property name="hibernate.current_session_context_class">thread</property>
+  <!-- 取值： thread：Session对象的生命周期与本地线程绑定。 jta：Session对象的生命周期与JTA事务绑定。 managed：Hibernate委托程序来管理Session对象的生命周期。 -->
+
+  <!-- 开启二级缓存 -->
+  <!-- <property name="hibernate.cache.use_second_level_cache">true</property> -->
+  <!-- 开启查询缓存 -->
+  <!-- <property name="hibernate.cache.use_query_cache">true</property> -->
+  <!-- 配置二级缓存的提供商 -->
+  <!-- <property name="hibernate.cache.provider_class">org.hibernate.cache.</property> -->
+
+
+
+  <mapping resource="com/fang/hibernate/po/TestUser.hbm.xml" />
+  <mapping resource="com/fang/hibernate/po/Customer.hbm.xml" />
+  <mapping resource="com/fang/hibernate/po/Orders.hbm.xml" />
+  <mapping resource="com/fang/hibernate/po/Course.hbm.xml" />
+  <mapping resource="com/fang/hibernate/po/Student.hbm.xml" />
+ </session-factory> 
+</hibernate-configuration>
