@@ -1,8 +1,11 @@
 package com.fang.hibernate.po;
 
 public class TestUser {
+
 	private Long id;
+
 	private String name;
+
 	private Integer age;
 
 	public Long getId() {
