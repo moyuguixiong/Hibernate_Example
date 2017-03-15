@@ -35,12 +35,9 @@
   <!-- 配置二级缓存的提供商 -->
   <!-- <property name="hibernate.cache.provider_class">org.hibernate.cache.</property> -->
 
-
-
   <mapping resource="com/fang/hibernate/po/TestUser.hbm.xml" />
-  <mapping resource="com/fang/hibernate/po/Customer.hbm.xml" />
-  <mapping resource="com/fang/hibernate/po/Orders.hbm.xml" />
-  <mapping resource="com/fang/hibernate/po/Course.hbm.xml" />
-  <mapping resource="com/fang/hibernate/po/Student.hbm.xml" />
- </session-factory> 
+  <!-- <mapping resource="com/fang/hibernate/po/Customer.hbm.xml" /> <mapping 
+   resource="com/fang/hibernate/po/Orders.hbm.xml" /> <mapping resource="com/fang/hibernate/po/Course.hbm.xml" 
+   /> <mapping resource="com/fang/hibernate/po/Student.hbm.xml" /> -->
+ </session-factory>
 </hibernate-configuration>

@@ -23,11 +23,10 @@ public class ReadConfig {
 		SessionFactory sessionFactory = configuration.buildSessionFactory();
 		Session session = sessionFactory.openSession();
 		Transaction tx = session.beginTransaction();
-		Criteria criteria = session.createCriteria(TestUser.class);
-		List<TestUser> list = criteria.list();
-		for (TestUser testUser : list) {
-			System.out.println(testUser.getName());
-		}
+		TestUser testUser = new TestUser();
+		testUser.setAge(20);
+		testUser.setName("张三");
+		session.save(testUser);
 		// criteria.add(Restrictions.ge("", 0));
 		tx.commit();
 		session.close();
