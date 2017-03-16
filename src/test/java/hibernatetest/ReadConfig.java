@@ -1,6 +1,5 @@
 package hibernatetest;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -16,10 +15,20 @@ import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fang.hibernate.po.TestUser;
+import com.fang.hibernate.service.TestUserService;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:spring/spring-root.xml")
 public class ReadConfig {
+	@Autowired
+	private TestUserService testUserService;
+
 	@Test
 	public void test() {
 		System.out.println(ReadConfig.class.getClass().getResource("/"));
@@ -30,10 +39,16 @@ public class ReadConfig {
 
 		TestUser testUser = session.load(TestUser.class, 5L);
 		System.out.println(testUser);
-		
+
 		tx.commit();
 		session.close();
 		sessionFactory.close();
+	}
+
+	@Test
+	public void hibernateTemplateTest() {
+
+		testUserService.test();
 	}
 
 	public void hql(Session session) {

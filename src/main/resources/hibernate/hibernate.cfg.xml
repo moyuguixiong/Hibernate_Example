@@ -21,7 +21,7 @@
        * create-drop:每次执行的时候,创建一个新的表,程序执行结束后将这个表,删除掉了. 一般测试的时候使用.
        * update :如果数据库中没有表,创建一个新的表,如果有了,直接使用这个表.可以更新表的结构.
        * validate :会使用原有的表.完成校验.校验映射文件与表中配置的字段是否一致.不一致报错. -->
-  <property name="hibernate.current_session_context_class">thread</property>
+  <!-- <property name="hibernate.current_session_context_class">thread</property> -->
   <!--
     取值：
   thread：Session对象的生命周期与本地线程绑定。
@@ -37,11 +37,11 @@
    <!-- <property name="hibernate.cache.provider_class">org.hibernate.cache.</property> -->
 
 
-
-  <mapping resource="com/fang/hibernate/po/SysUser.hbm.xml"/>
+<!-- <mapping resource="com/fang/hibernate/po/TestUser.hbm.xml"/> -->
+<!--   <mapping resource="com/fang/hibernate/po/SysUser.hbm.xml"/>
   <mapping resource="com/fang/hibernate/po/Customer.hbm.xml"/>
   <mapping resource="com/fang/hibernate/po/Orders.hbm.xml"/>
   <mapping resource="com/fang/hibernate/po/Course.hbm.xml"/>
-  <mapping resource="com/fang/hibernate/po/Student.hbm.xml"/>
+  <mapping resource="com/fang/hibernate/po/Student.hbm.xml"/> -->
  </session-factory>
 </hibernate-configuration>
