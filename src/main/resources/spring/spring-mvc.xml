@@ -44,6 +44,11 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
   class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
   <property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
   <property name="validationMessageSource" ref="validationMessageSource" />
+  <property name="validationProperties">
+  <props>
+   <prop key="hibernate.validator.fail_fast">true</prop>
+  </props>
+  </property>
  </bean>
 
  <!-- 配置web绑定初始化器，初始化器中可以配置参数类型转换(conversionService)、参数验证器(validator) -->
@@ -66,6 +71,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
  </bean>
 
  <!-- SpringMVC使用消息转换器实现请求报文和对象、对象和响应报文之间的自动转换 -->
+ 
 
  <!-- 配置处理器映射器 -->
  <bean

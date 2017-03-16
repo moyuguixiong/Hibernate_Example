@@ -1,5 +1,6 @@
 package hibernatetest;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -9,6 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
@@ -37,8 +40,9 @@ public class ReadConfig {
 		Session session = sessionFactory.openSession();
 		Transaction tx = session.beginTransaction();
 
-		TestUser testUser = session.load(TestUser.class, 5L);
-		System.out.println(testUser);
+		// hql的更新、删除、插入
+
+		session.createQuery("from ");
 
 		tx.commit();
 		session.close();
@@ -47,8 +51,19 @@ public class ReadConfig {
 
 	@Test
 	public void hibernateTemplateTest() {
-
-		testUserService.test();
+		Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
+		SessionFactory sessionFactory = configuration.buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		for (int i = 2; i < 50; i++) {
+			TestUser user = new TestUser();
+			user.setName("编号" + (i + 1));
+			user.setAge(i + 2);
+			session.save(user);
+		}
+		tx.commit();
+		session.close();
+		sessionFactory.close();
 	}
 
 	public void hql(Session session) {
@@ -70,34 +85,41 @@ public class ReadConfig {
 	}
 
 	public void qbc(Session session) {
-		int pageIndex = 6;
-		int pageSize = 3;
-		Criteria criteriaCount = session.createCriteria(TestUser.class);
-		criteriaCount.setProjection(Projections.rowCount());
-		double totalCount = Double.parseDouble(criteriaCount.uniqueResult().toString());
-		System.out.println("总数量" + (int) totalCount);
-		System.out.println("最大页码" + (int) Math.ceil(totalCount / pageSize));
-
+		// qbc
 		Criteria criteria = session.createCriteria(TestUser.class, "user");
 
-		// 查询哪些字段
-		criteria.setProjection(Projections.projectionList().add(Property.forName("user.name"), "name")
-				.add(Property.forName("user.id"), "id"));
-		// 设置where条件
-		criteria.add(Restrictions.gt("id", 0L));
-		// 设置排序
-		criteria.addOrder(Order.asc("id"));
-		// 将数组转换为对象
-		criteria.setResultTransformer(Transformers.aliasToBean(TestUser.class));
+		// 投影查询，即查询有限个字段
+		criteria.setProjection(Projections.projectionList().add(Property.forName("user.id"), "id")
+				.add(Property.forName("user.name"), "name").add(Property.forName("user.age"), "age"));
 
+		// 条件查询
+		criteria.add(Restrictions.and(Restrictions.gt("id", 1L), Restrictions.lt("age", 100)));
+
+		// 排序
+		// criteria.addOrder(Order.desc("age"));
+		// criteria.addOrder(Order.desc("name"));
+		criteria.addOrder(Order.desc("id"));
+
+		// 分页
+		int pageSize = 5;
+		int pageIndex = 2;
 		criteria.setFirstResult((pageIndex - 1) * pageSize);
 		criteria.setMaxResults(pageSize);
+
+		criteria.setResultTransformer(Transformers.aliasToBean(TestUser.class));
 
 		@SuppressWarnings("unchecked")
 		List<TestUser> list = criteria.list();
 		for (TestUser testUser : list) {
 			System.out.println(testUser);
 		}
+
+		// or查询
+		Criteria criteria2 = session.createCriteria(TestUser.class);
+		criteria.add(Restrictions.disjunction(Restrictions.eq("id", 51L), Restrictions.lt("age", 10)));
+		TestUser usr = (TestUser) criteria2.list().get(0);
+		System.out.println(usr);
+
 	}
 
 	public void sql(Session session) {

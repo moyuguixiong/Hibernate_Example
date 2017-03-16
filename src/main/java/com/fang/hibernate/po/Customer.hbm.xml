@@ -20,7 +20,7 @@
     * 当一个客户与某个订单解除了关系.将外键置为null.订单没有了所属客户,相当于一个孩子没有了父亲.将这种记录就删除了. all-delete-orphan
     :包含了孤儿删除的所有的级联. -->
    <key>
-    <column name="CID" /><!-- 要和一对多中，多的表的外键字段名一致，否则会生成多个外键字段 -->
+    <column name="customerid" /><!-- 要和一对多中，多的表的外键字段名一致，否则会生成多个外键字段 -->
    </key>
    <one-to-many class="com.fang.hibernate.po.Orders" />
   </set>
